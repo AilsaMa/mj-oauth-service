@@ -1,0 +1,21 @@
+server:
+  port: 1199
+spring:
+  application:
+    name: auth-service
+  datasource:
+      url: ${spring.datasource.url}
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      driver-class-name: com.mysql.jdbc.Driver
+
+
+# Mybatis
+mybatis.type-aliases-package: com.mj.travel.entity
+mybatis.mapper-locations: classpath:com/mj/travel/mapper/*.xml
+
+eureka.instance.prefer-ip-address: true
+eureka.instance.instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+eureka.client.serviceUrl.defaultZone: http://root:root@localhost:9999/eureka/
+eureka.instance.lease-renewal-interval-in-seconds: 5
+eureka.instance.lease-expiration-duration-in-seconds: 10
