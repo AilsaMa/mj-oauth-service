@@ -8,10 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableAutoConfiguration
-@ComponentScan(basePackages = {"com.springboot.basicauth"})
-public class SpringbootBasicAuthApplication {
+@ComponentScan(basePackages = {"com.mj.auth"})
+public class MjAuthApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringbootBasicAuthApplication.class, args);
+		SpringApplication.run(MjAuthApplication.class, args);
 	}
 }
