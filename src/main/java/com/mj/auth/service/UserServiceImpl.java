@@ -1,7 +1,8 @@
-package com.springboot.basicauth.service;
+package com.mj.auth.service;
 
-import com.springboot.basicauth.pojo.CustomUserDetails;
-import com.springboot.basicauth.pojo.User;
+
+import com.mj.auth.pojo.CustomUserDetails;
+import com.mj.auth.pojo.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

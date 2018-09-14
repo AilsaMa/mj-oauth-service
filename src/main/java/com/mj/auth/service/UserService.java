@@ -1,4 +1,4 @@
-package com.springboot.basicauth.service;
+package com.mj.auth.service;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 

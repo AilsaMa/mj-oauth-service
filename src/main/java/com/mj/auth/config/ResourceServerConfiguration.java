@@ -1,4 +1,4 @@
-package com.springboot.basicauth.config;
+package com.mj.auth.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

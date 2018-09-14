@@ -1,4 +1,4 @@
-package com.springboot.basicauth.pojo;
+package com.mj.auth.pojo;
 
 import java.io.Serializable;
 

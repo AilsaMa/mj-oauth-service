@@ -1,4 +1,4 @@
-package com.springboot.basicauth.config;
+package com.mj.auth.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,6 +1,6 @@
-package com.springboot.basicauth.config;
+package com.mj.auth.config;
 
-import com.springboot.basicauth.service.UserService;
+import com.mj.auth.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
