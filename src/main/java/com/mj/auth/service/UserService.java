@@ -1,19 +1,7 @@
 package com.mj.auth.service;
 
-import com.mj.auth.model.Result;
-import com.mj.auth.model.UserVo;
-import com.mj.auth.service.impl.UserServiceImpl;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-/**
- * Created by Mr.Yangxiufeng on 2017/12/27.
- * Time:15:12
- * ProjectName:Mirco-Service-Skeleton
- */
-@FeignClient(name = "mss-upms",fallback = UserServiceImpl.class)
-public interface UserService {
-    @GetMapping("user/findByUsername/{username}")
-    Result<UserVo> findByUsername(@PathVariable("username") String username);
+public interface UserService extends UserDetailsService {
+    //后期在此新增UserService的业务接口
 }

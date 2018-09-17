@@ -1,31 +1,25 @@
 package com.mj.auth.config;
 
 
-import com.mj.auth.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
-import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Created by Mr.Yangxiufeng on 2017/12/28.
- * Time:11:02
- * ProjectName:Mirco-Service-Skeleton
- */
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -34,60 +28,49 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private DataSource dataSource;
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userService;
 
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
-
-    @Bean
-    RedisTokenStore redisTokenStore(){
-        return new RedisTokenStore(redisConnectionFactory);
-    }
-
-    //token存储数据库
-//    @Bean
-//    public JdbcTokenStore jdbcTokenStore(){
-//        return new JdbcTokenStore(dataSource);
-//    }
+    private TokenStore tokenStore;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.withClientDetails(clientDetails());
+        clients.inMemory()
+                .withClient("test")//客户端ID
+                .authorizedGrantTypes("password", "refresh_token")//设置验证方式
+                .scopes("read", "write")
+                .secret(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("123456"))
+                .accessTokenValiditySeconds(10000) //token过期时间
+                .refreshTokenValiditySeconds(10000); //refresh过期时间
     }
-    @Bean
-    public ClientDetailsService clientDetails() {
-        return new JdbcClientDetailsService(dataSource);
-    }
+
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(redisTokenStore())
-                .userDetailsService(userDetailsService)
-                .authenticationManager(authenticationManager);
-        endpoints.tokenServices(defaultTokenServices());
+        endpoints.tokenStore(tokenStore)
+                .authenticationManager(authenticationManager)
+                .userDetailsService(userService); //配置userService 这样每次认证的时候会去检验用户是否锁定，有效等
     }
 
-    /**
-     * <p>注意，自定义TokenServices的时候，需要设置@Primary，否则报错，</p>
-     * @return
-     */
-    @Primary
     @Bean
-    public DefaultTokenServices defaultTokenServices(){
-        DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(redisTokenStore());
-        tokenServices.setSupportRefreshToken(true);
-        tokenServices.setClientDetailsService(clientDetails());
-        tokenServices.setAccessTokenValiditySeconds(60*60*12); // token有效期自定义设置，默认12小时
-        tokenServices.setRefreshTokenValiditySeconds(60 * 60 * 24 * 7);//默认30天，这里修改
-        return tokenServices;
+    public TokenStore tokenStore() {
+        //使用内存的tokenStore
+        return new InMemoryTokenStore();
     }
 
-    @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.tokenKeyAccess("permitAll()");
-        security .checkTokenAccess("isAuthenticated()");
-        security.allowFormAuthenticationForClients();
+    public static PasswordEncoder createDelegatingPasswordEncoder() {
+        String encodingId = "bcrypt";
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put(encodingId, new BCryptPasswordEncoder());
+        encoders.put("ldap", new LdapShaPasswordEncoder());
+        encoders.put("MD4", new Md4PasswordEncoder());
+        encoders.put("MD5", new MessageDigestPasswordEncoder("MD5"));
+        encoders.put("noop", NoOpPasswordEncoder.getInstance());
+        encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
+        encoders.put("scrypt", new SCryptPasswordEncoder());
+        encoders.put("SHA-1", new MessageDigestPasswordEncoder("SHA-1"));
+        encoders.put("SHA-256", new MessageDigestPasswordEncoder("SHA-256"));
+        encoders.put("sha256", new StandardPasswordEncoder());
+
+        return new DelegatingPasswordEncoder(encodingId, encoders);
     }
 }
