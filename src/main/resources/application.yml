@@ -4,14 +4,16 @@ spring:
   application:
     name: auth-service
   datasource:
-      url: ${spring.datasource.url}
-      username: ${spring.datasource.username}
-      password: ${spring.datasource.password}
-      driver-class-name: com.mysql.jdbc.Driver
-  redis:
-      host: 127.0.0.1
-      port: 6379
-      password: 123456
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: com.mysql.jdbc.Driver
+
+
+spring.redis.host: loaclhost
+spring.redis.password: 123456
+spring.redis.database: 0
+spring.redis.port: 6739
 
 
 # Mybatis
