@@ -1,6 +1,8 @@
 package com.mj.auth.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
 
     private long userId;
 

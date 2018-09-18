@@ -10,10 +10,14 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
 
 
-spring.redis.host: loaclhost
+#redis数据库名称  从0到15,默认为db0
+spring.redis.database: 1
+#redis服务器名称
+spring.redis.host: 127.0.0.1
+#redis服务器密码
 spring.redis.password: 123456
-spring.redis.database: 0
-spring.redis.port: 6739
+#redis服务器连接端口号
+spring.redis.port: 6379
 
 
 # Mybatis
