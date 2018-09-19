@@ -16,11 +16,23 @@ public class UserController {
  
     @PostMapping("/bar")
     public String bar(@RequestHeader("Authorization") String auth) {
- 
+
         MyUserDetails userDetails = (MyUserDetails) tokenStore.readAuthentication(auth.split(" ")[1]).getPrincipal();
- 
+
         User user = userDetails.getUser();
- 
+
         return user.getUserName() + ":" + user.getPassword();
+    }
+
+    @PostMapping("/bar1")
+    public String bar() {
+
+       return "000000";
+    }
+
+    @PostMapping("/bar2")
+    public String bar2() {
+
+        return "111111";
     }
 }
