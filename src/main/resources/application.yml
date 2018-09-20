@@ -29,3 +29,8 @@ eureka.instance.instance-id: ${spring.application.name}:${spring.cloud.client.ip
 eureka.client.serviceUrl.defaultZone: http://root:root@localhost:9999/eureka/
 eureka.instance.lease-renewal-interval-in-seconds: 5
 eureka.instance.lease-expiration-duration-in-seconds: 10
+
+#security.oauth2.client.clientId: test
+#security.oauth2.client.clientSecret: 123456
+#security.oauth2.client.authorized-grant-types: password,refresh_token
+#security.oauth2.client.scope: openid
